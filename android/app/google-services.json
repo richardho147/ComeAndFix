@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "313694454053",
+    "project_id": "comenfix-8f86a",
+    "storage_bucket": "comenfix-8f86a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313694454053:android:454d2c9d6f87d624231acc",
+        "android_client_info": {
+          "package_name": "com.example.come_n_fix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAosEobHF3Zp2fs-FXI5f8Q-Psz5jVGmcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
