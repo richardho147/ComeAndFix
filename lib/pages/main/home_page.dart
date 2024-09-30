@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
             child: Text(
-              'Hi ${userDetail['username']},\nWelcome to Come&Fix',
+              'Hi ${userDetail['username']},\nWelcome to BantuAja',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),

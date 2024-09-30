@@ -105,9 +105,9 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               //logo
               Image(
-                image: AssetImage('assets/images/ComeNFixLogo.jpg'),
-                width: 100.0,
-                height: 100.0,
+                image: AssetImage('assets/images/BantuAjaLogo.png'),
+                width: 150.0,
+                height: 150.0,
               ),
 
               SizedBox(height: 50.0),

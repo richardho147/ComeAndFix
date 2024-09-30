@@ -76,7 +76,7 @@ class _OrderPageState extends State<OrderPage> {
         stream: (userDetail['role'] == 'Provider')
             ? FirebaseFirestore.instance
                 .collection('transactions')
-                .where('provider id', isEqualTo: currentId)
+                .where('provider_id', isEqualTo: currentId)
                 .snapshots()
             : FirebaseFirestore.instance
                 .collection('transactions')
@@ -163,7 +163,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _setPrice(
-                  '${transaction['provider id']}_${transaction['customer id']}');
+                  '${transaction['provider_id']}_${transaction['customer id']}');
             },
             child: Icon(Icons.monetization_on,
                 color: Color.fromARGB(255, 124, 102, 89)),
@@ -190,7 +190,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _setPayment(
-                  '${transaction['provider id']}_${transaction['customer id']}',
+                  '${transaction['provider_id']}_${transaction['customer id']}',
                   transaction['price']);
             },
             child: Icon(Icons.handshake_outlined,
@@ -202,7 +202,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _confirmTransaction(
-                  '${transaction['provider id']}_${transaction['customer id']}',
+                  '${transaction['provider_id']}_${transaction['customer id']}',
                   userDetail['role']);
             },
             child: Icon(Icons.check, color: Color.fromARGB(255, 124, 102, 89)),
@@ -229,7 +229,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _confirmTransaction(
-                  '${transaction['provider id']}_${transaction['customer id']}',
+                  '${transaction['provider_id']}_${transaction['customer id']}',
                   userDetail['role']);
             },
             child: Icon(Icons.check, color: Color.fromARGB(255, 124, 102, 89)),
@@ -239,9 +239,9 @@ class _OrderPageState extends State<OrderPage> {
         return GestureDetector(
           onTap: () {
             _rateProvider(
-                transaction['provider id'],
+                transaction['provider_id'],
                 transaction['provider name'],
-                '${transaction['provider id']}_${transaction['customer id']}');
+                '${transaction['provider_id']}_${transaction['customer id']}');
           },
           child: Icon(Icons.star, color: Color.fromARGB(255, 124, 102, 89)),
         );
@@ -283,7 +283,7 @@ class _OrderPageState extends State<OrderPage> {
                               builder: (context) => IndividualChatPage(
                                 receiverUserId: (role == 'Provider')
                                     ? transaction['customer id']
-                                    : transaction['provider id'],
+                                    : transaction['provider_id'],
                                 receiverUsername: (role == 'Provider')
                                     ? transaction['customer name']
                                     : transaction['provider name'],

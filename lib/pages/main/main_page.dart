@@ -3,6 +3,7 @@ import "package:come_n_fix/pages/chat/chat_page.dart";
 import "package:come_n_fix/pages/main/order_page.dart";
 import "package:come_n_fix/pages/main/home_page.dart";
 import "package:come_n_fix/pages/main/profile_page.dart";
+import "package:come_n_fix/pages/main/schedule_page.dart";
 import "package:come_n_fix/repository/user_repository.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
@@ -33,6 +34,7 @@ class _MainPageState extends State<MainPage> {
       if(role == 'Provider'){
         pages = [
           OrderPage(),
+          SchedulePage(),
           ChatPage(),
           ProfilePage(),
         ];
@@ -59,7 +61,8 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Come&Fix',
+          'BantuAja',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [IconButton(onPressed: _logUserOut, icon: Icon(Icons.logout))],
         backgroundColor: Color.fromARGB(255, 124, 102, 89),
@@ -96,6 +99,11 @@ class _MainPageState extends State<MainPage> {
           icon: Icon(Icons.receipt, color: Colors.white),
           selectedIcon: Icon(Icons.receipt),
           label: 'Order',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.date_range_outlined, color: Colors.white),
+          selectedIcon: Icon(Icons.date_range_rounded),
+          label: 'Schedule',
         ),
         NavigationDestination(
           icon: Icon(Icons.chat_bubble_outline, color: Colors.white),

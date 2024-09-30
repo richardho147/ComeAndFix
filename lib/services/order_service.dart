@@ -18,7 +18,7 @@ class OrderService extends ChangeNotifier {
     String customerName = await userRep.getUserName(customerId);
 
     await _fireStore.collection('transactions').doc(transactionId).set({
-      'provider id': providerId,
+      'provider_id': providerId,
       'customer id': customerId,
       'provider name': providerName,
       'customer name': customerName,
@@ -26,6 +26,7 @@ class OrderService extends ChangeNotifier {
       'service': service,
       'payment type': '-',
       'price': '-',
+      'time': DateTime.now(),
     });
   }
 }
