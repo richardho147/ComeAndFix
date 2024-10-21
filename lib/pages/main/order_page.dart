@@ -76,11 +76,11 @@ class _OrderPageState extends State<OrderPage> {
         stream: (userDetail['role'] == 'Provider')
             ? FirebaseFirestore.instance
                 .collection('transactions')
-                .where('provider_id', isEqualTo: currentId)
+                .where('providerId', isEqualTo: currentId)
                 .snapshots()
             : FirebaseFirestore.instance
                 .collection('transactions')
-                .where('customer id', isEqualTo: currentId)
+                .where('customerId', isEqualTo: currentId)
                 .snapshots(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -128,8 +128,8 @@ class _OrderPageState extends State<OrderPage> {
       Map<String, dynamic> transaction, Map<String, dynamic> userDetail) {
     String role = userDetail['role'];
     String title = (role == 'Provider')
-        ? '${transaction['service']} Service to Customer ${transaction['customer name']}'
-        : '${transaction['service']} Service by Fixer ${transaction['provider name']}';
+        ? '${transaction['service']} Service to Customer ${transaction['customerName']}'
+        : '${transaction['service']} Service by Fixer ${transaction['providerName']}';
 
     String subtitle = '';
     if (transaction['status'] == 'negotiation') {
@@ -151,10 +151,10 @@ class _OrderPageState extends State<OrderPage> {
     } else if (transaction['status'] == 'done' ||
         transaction['status'] == 'rated') {
       title = (role == 'Provider')
-          ? 'You have finished fixing ${transaction['customer name']} ${transaction['service']} problem'
-          : '${transaction['provider name']} have finished fixing your ${transaction['service']} problem';
+          ? 'You have finished fixing ${transaction['customerName']} ${transaction['service']} problem'
+          : '${transaction['providerName']} have finished fixing your ${transaction['service']} problem';
       subtitle =
-          'Price: ${transaction['price']}, Paid by ${transaction['payment type']}';
+          'Price: ${transaction['price']}, Paid by ${transaction['paymentType']}';
     }
 
     Widget whatButton() {
@@ -163,7 +163,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _setPrice(
-                  '${transaction['provider_id']}_${transaction['customer id']}');
+                  '${transaction['providerId']}_${transaction['customerId']}');
             },
             child: Icon(Icons.monetization_on,
                 color: Color.fromARGB(255, 124, 102, 89)),
@@ -190,7 +190,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _setPayment(
-                  '${transaction['provider_id']}_${transaction['customer id']}',
+                  '${transaction['providerId']}_${transaction['customerId']}',
                   transaction['price']);
             },
             child: Icon(Icons.handshake_outlined,
@@ -202,7 +202,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _confirmTransaction(
-                  '${transaction['provider_id']}_${transaction['customer id']}',
+                  '${transaction['providerId']}_${transaction['customerId']}',
                   userDetail['role']);
             },
             child: Icon(Icons.check, color: Color.fromARGB(255, 124, 102, 89)),
@@ -229,7 +229,7 @@ class _OrderPageState extends State<OrderPage> {
           return GestureDetector(
             onTap: () {
               _confirmTransaction(
-                  '${transaction['provider_id']}_${transaction['customer id']}',
+                  '${transaction['providerId']}_${transaction['customerId']}',
                   userDetail['role']);
             },
             child: Icon(Icons.check, color: Color.fromARGB(255, 124, 102, 89)),
@@ -239,9 +239,9 @@ class _OrderPageState extends State<OrderPage> {
         return GestureDetector(
           onTap: () {
             _rateProvider(
-                transaction['provider_id'],
-                transaction['provider name'],
-                '${transaction['provider_id']}_${transaction['customer id']}');
+                transaction['providerId'],
+                transaction['providerName'],
+                '${transaction['providerId']}_${transaction['customerId']}');
           },
           child: Icon(Icons.star, color: Color.fromARGB(255, 124, 102, 89)),
         );
@@ -282,14 +282,14 @@ class _OrderPageState extends State<OrderPage> {
                             MaterialPageRoute(
                               builder: (context) => IndividualChatPage(
                                 receiverUserId: (role == 'Provider')
-                                    ? transaction['customer id']
-                                    : transaction['provider_id'],
+                                    ? transaction['customerId']
+                                    : transaction['providerId'],
                                 receiverUsername: (role == 'Provider')
-                                    ? transaction['customer name']
-                                    : transaction['provider name'],
+                                    ? transaction['customerName']
+                                    : transaction['providerName'],
                                 senderUsername: (role == 'Provider')
-                                    ? transaction['provider name']
-                                    : transaction['customer name'],
+                                    ? transaction['providerName']
+                                    : transaction['customerName'],
                               ),
                             ));
                       },
@@ -460,7 +460,7 @@ class _OrderPageState extends State<OrderPage> {
                   await _firestore
                       .collection('transactions')
                       .doc(transactionId)
-                      .update({'payment type': newValue, 'status': 'settled'});
+                      .update({'paymentType': newValue, 'status': 'settled'});
                 }
               },
               child: Text('Yes', style: TextStyle(color: Colors.white)))

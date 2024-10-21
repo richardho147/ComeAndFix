@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:come_n_fix/components/loading_animation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -27,7 +27,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
                 .collection('transactions')
-                .where('provider_id', isEqualTo: currentId)
+                .where('providerId', isEqualTo: currentId)
                 .snapshots(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasError) {
@@ -54,6 +54,25 @@ class _SchedulePageState extends State<SchedulePage> {
             transactionDate.day == today.day;
     }).toList();
 
+    Map<DateTime, List<String>> dateTimeNameMap = {};
+
+    for (var transaction in transactions) {
+      Timestamp transactionTime = transaction['time'];
+      DateTime transactionDate = DateTime(transactionTime.toDate().year, transactionTime.toDate().month, transactionTime.toDate().day);
+      String name = transaction['customerName'];
+
+      if (dateTimeNameMap.containsKey(transactionDate)) {
+        dateTimeNameMap[transactionDate]!.add(name);
+      } else {
+        dateTimeNameMap[transactionDate] = [name];
+      }
+    }
+
+    // Function to get events for a specific day (with time stripped out)
+    List<String> _getEventsForDay(DateTime day) {
+      return dateTimeNameMap[DateTime(day.year, day.month, day.day)] ?? [];
+    }
+     
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -70,6 +89,7 @@ class _SchedulePageState extends State<SchedulePage> {
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2050, 1, 1),
               onDaySelected: _onDaySelected,
+              eventLoader: _getEventsForDay,
               calendarStyle: CalendarStyle(
                 todayDecoration: BoxDecoration(
                   color: Color.fromARGB(255, 212, 190, 169),
@@ -79,6 +99,14 @@ class _SchedulePageState extends State<SchedulePage> {
                   color: Color.fromARGB(255, 124, 102, 89),
                   shape: BoxShape.circle,
                 ),
+              ),
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, day, events) {
+                  if (events.isNotEmpty) {
+                    return _buildEventsMarker(day, events);
+                  }
+                  return SizedBox();
+                },
               ),
             ),
           ),
@@ -93,6 +121,7 @@ class _SchedulePageState extends State<SchedulePage> {
               child: Text(
                 'Your Schedule',
                 style: TextStyle(
+                  fontSize: 16,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -115,8 +144,8 @@ class _SchedulePageState extends State<SchedulePage> {
               itemBuilder: (context, index) {
                 Map<String, dynamic> transaction = filteredTransactions[index];
                   return ListTile(
-                    title: Text('Customer: ${transaction['customer name']}'),
-                    subtitle: Text('Service: ${transaction['service'].toString()}'),
+                    title: Text('Customer: ${transaction['customerName']}'),
+                    subtitle: Text('Service: ${transaction['service'].toString()}, ${DateFormat('HH:mm').format(transaction['time'].toDate())}'),
                     trailing: Text((transaction['status'] == 'rated') ? 
                                     'Finished':'Unfinish'),
                   );
@@ -127,4 +156,29 @@ class _SchedulePageState extends State<SchedulePage> {
       )
     );
   }
+  Widget _buildEventsMarker(DateTime day, List events) {
+    return Positioned(
+      right: 1,
+      bottom: 1,
+      child: Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 143, 90, 38),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+            events.length.toString(), // Show the number of events
+            style: TextStyle().copyWith(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 }

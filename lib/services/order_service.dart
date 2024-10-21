@@ -18,13 +18,13 @@ class OrderService extends ChangeNotifier {
     String customerName = await userRep.getUserName(customerId);
 
     await _fireStore.collection('transactions').doc(transactionId).set({
-      'provider_id': providerId,
-      'customer id': customerId,
-      'provider name': providerName,
-      'customer name': customerName,
+      'providerId': providerId,
+      'customerId': customerId,
+      'providerName': providerName,
+      'customerName': customerName,
       'status': 'negotiation',
       'service': service,
-      'payment type': '-',
+      'paymentType': '-',
       'price': '-',
       'time': DateTime.now(),
     });
