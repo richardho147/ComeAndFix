@@ -159,7 +159,7 @@ class _FindPageState extends State<FindPage> {
                           _nearbyList[index]['description'] != '-' &&
                           _nearbyList[index]['gender'] != '-' &&
                           _nearbyList[index]['location'] != '-' &&
-                          _nearbyList[index]['phone number'] != '-'))
+                          _nearbyList[index]['phoneNumber'] != '-'))
                   ? ListTile(
                       onTap: () => _providerDetail(_nearbyList[index]),
                       title: Text(_nearbyList[index]['username']),
@@ -193,7 +193,7 @@ class _FindPageState extends State<FindPage> {
                 _resultList[index]['description'] != '-' &&
                 _resultList[index]['gender'] != '-' &&
                 _resultList[index]['location'] != '-' &&
-                _resultList[index]['phone number'] != '-')
+                _resultList[index]['phoneNumber'] != '-')
             ? ListTile(
                 onTap: () => _providerDetail(_resultList[index]),
                 title: Text(_resultList[index]['username']),
@@ -249,7 +249,7 @@ class _FindPageState extends State<FindPage> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Image.network(
-                          '${userDetail['profile url']}',
+                          '${userDetail['profileUrl']}',
                           errorBuilder: (BuildContext context, Object exception,
                               StackTrace? stackTrace) {
                             return Image.asset(
@@ -291,7 +291,7 @@ class _FindPageState extends State<FindPage> {
                   (userDetail['rating'] == 0)
                       ? Text('No rating yet')
                       : Text(
-                          'Total Rating: ${userDetail['rating']}/5 by ${userDetail['rate amount']} User'),
+                          'Total Rating: ${userDetail['rating']}/5 by ${userDetail['rateAmount']} User'),
                 ],
               ),
             ),

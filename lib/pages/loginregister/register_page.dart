@@ -67,9 +67,9 @@ class _RegisterPageState extends State<RegisterPage> {
         'role': role,
         'username': username,
         'gender': '-',
-        'profile url':
+        'profileUrl':
             'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-        'phone number': '-',
+        'phoneNumber': '-',
         'address': '-',
         'location': '-',
       });
@@ -78,14 +78,14 @@ class _RegisterPageState extends State<RegisterPage> {
         'role': 'Provider',
         'username': username,
         'gender': '-',
-        'profile url':
+        'profileUrl':
             'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-        'phone number': '-',
+        'phoneNumber': '-',
         'description': '-',
         'location': '-',
         'services': [],
         'rating': 0.0,
-        'rate amount': 0,
+        'rateAmount': 0,
         'address': '-',
       });
     }

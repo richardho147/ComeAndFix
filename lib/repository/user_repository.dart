@@ -34,7 +34,7 @@ class UserRepository {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     if (documentSnapshot.exists) {
-      return documentSnapshot.get('rate amount');
+      return documentSnapshot.get('rateAmount');
     } else {
       print('No user data found for the current user.');
       return 0;

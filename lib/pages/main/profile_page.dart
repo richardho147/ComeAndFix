@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final imageUrl = await imageRef.getDownloadURL();
 
-    usersCollection.doc(currentId).update({'profile url': imageUrl});
+    usersCollection.doc(currentId).update({'profileUrl': imageUrl});
   }
 
   @override
@@ -139,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Image.network(
-                        '${userDetail['profile url']}',
+                        '${userDetail['profileUrl']}',
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace? stackTrace) {
                           return Image.asset(
@@ -201,10 +201,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _providerView(
       Map<String, dynamic> userDetail, List<String> detailKeys, int index) {
-    if (detailKeys[userDetail.length - 1 - index] == 'profile url' ||
+    if (detailKeys[userDetail.length - 1 - index] == 'profileUrl' ||
         detailKeys[userDetail.length - 1 - index] == 'role' ||
         detailKeys[userDetail.length - 1 - index] == 'location' ||
-        detailKeys[userDetail.length - 1 - index] == 'rate amount') {
+        detailKeys[userDetail.length - 1 - index] == 'rateAmount') {
       return Container();
     } else if (detailKeys[userDetail.length - 1 - index] == 'rating') {
       return Container(
@@ -230,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
             Text(
-                'Total Rating: ${userDetail['rating']}/5 by ${userDetail['rate amount']} User'),
+                'Total Rating: ${userDetail['rating']}/5 by ${userDetail['rateAmount']} User'),
           ],
         ),
       );
@@ -265,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     } else {
       return ProfileBox(
-          section: detailKeys[userDetail.length - 1 - index].capitalize(),
+          section: (detailKeys[userDetail.length - 1 - index] == 'phoneNumber') ? "Phone Number" : detailKeys[userDetail.length - 1 - index].capitalize(),
           text: userDetail[detailKeys[userDetail.length - 1 - index]],
           onPressed: () =>
               (detailKeys[userDetail.length - 1 - index] == 'address')
@@ -280,12 +280,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _customerView(
       Map<String, dynamic> userDetail, List<String> detailKeys, int index) {
-    return (detailKeys[userDetail.length - 1 - index] == 'profile url' ||
+    return (detailKeys[userDetail.length - 1 - index] == 'profileUrl' ||
             detailKeys[userDetail.length - 1 - index] == 'role' ||
             detailKeys[userDetail.length - 1 - index] == 'location')
         ? Container()
         : ProfileBox(
-            section: detailKeys[userDetail.length - 1 - index].capitalize(),
+            section: (detailKeys[userDetail.length - 1 - index] == 'phoneNumber') ? "Phone Number" : detailKeys[userDetail.length - 1 - index].capitalize(),
             text: userDetail[detailKeys[userDetail.length - 1 - index]],
             onPressed: () =>
                 (detailKeys[userDetail.length - 1 - index] == 'address')

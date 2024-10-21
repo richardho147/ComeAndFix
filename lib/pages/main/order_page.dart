@@ -39,7 +39,7 @@ class _OrderPageState extends State<OrderPage> {
                     userDetail['description'] == '-' ||
                     userDetail['gender'] == '-' ||
                     userDetail['location'] == '-' ||
-                    userDetail['phone number'] == '-' ||
+                    userDetail['phoneNumber'] == '-' ||
                     userDetail['services'].isEmpty)) {
               return _fillInformation();
             } else {
@@ -367,7 +367,7 @@ class _OrderPageState extends State<OrderPage> {
                   await _firestore.collection('users').doc(providerId).update({
                     'rating': ((newValue + (rating * rateAmount)) /
                         (rateAmount + 1)),
-                    'rate amount': (rateAmount + 1)
+                    'rateAmount': (rateAmount + 1)
                   });
                   await _firestore
                       .collection('transactions')

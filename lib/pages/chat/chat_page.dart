@@ -148,7 +148,7 @@ class _ChatPageState extends State<ChatPage> {
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Image.network(
-                '${data['profile url']}',
+                '${data['profileUrl']}',
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
                   return Image.asset(
@@ -257,7 +257,7 @@ class _ChatPageState extends State<ChatPage> {
 //             leading: ClipRRect(
 //               borderRadius: BorderRadius.circular(100),
 //               child: Image.network(
-//                 '${data['profile url']}',
+//                profileUrl']}',
 //                 errorBuilder: (BuildContext context, Object exception,
 //                     StackTrace? stackTrace) {
 //                   return Image.asset(
