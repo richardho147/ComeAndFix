@@ -34,7 +34,7 @@ class _MainPageState extends State<MainPage> {
       if(role == 'Provider'){
         pages = [
           OrderPage(),
-          SchedulePage(),
+          // SchedulePage(),
           ChatPage(),
           ProfilePage(),
         ];
@@ -100,11 +100,11 @@ class _MainPageState extends State<MainPage> {
           selectedIcon: Icon(Icons.receipt),
           label: 'Order',
         ),
-        NavigationDestination(
-          icon: Icon(Icons.date_range_outlined, color: Colors.white),
-          selectedIcon: Icon(Icons.date_range_rounded),
-          label: 'Schedule',
-        ),
+        // NavigationDestination(
+        //   icon: Icon(Icons.date_range_outlined, color: Colors.white),
+        //   selectedIcon: Icon(Icons.date_range_rounded),
+        //   label: 'Schedule',
+        // ),
         NavigationDestination(
           icon: Icon(Icons.chat_bubble_outline, color: Colors.white),
           selectedIcon: Icon(Icons.chat),

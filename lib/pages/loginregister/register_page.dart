@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:come_n_fix/components/input_text_field.dart';
 import 'package:come_n_fix/components/loading_animation.dart';
+import 'package:come_n_fix/pages/loginregister/fill_register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -22,13 +23,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String errorMessage = '';
 
   Future<User?> registerWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, String role) async {
     try {
       UserCredential credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if(role == 'Provider')FirebaseAuth.instance.signOut();
       return credential.user;
     } catch (e) {
       print('Error: $e');
@@ -37,7 +39,20 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  void RegisterUserIn(String role) async {
+  Future RegisterUserIn(String role) async {
+
+    late final result;
+
+    if(role == 'Provider'){
+      result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FillRegisterPage(email: emailController.text.trim())),
+      );
+    }
+    else{
+      result = [];
+    }
+
     late BuildContext dialogContext;
 
     showDialog(
@@ -48,20 +63,20 @@ class _RegisterPageState extends State<RegisterPage> {
         });
 
     User? user = await registerWithEmailAndPassword(
-        emailController.text.trim(), passwordController.text.trim());
+        emailController.text.trim(), passwordController.text.trim(), role);
 
     if (user != null) {
       Navigator.pop(dialogContext);
       addUserDetails(
           '${firstNameController.text.trim()} ${lastNameController.text.trim()}',
           role,
-          user.uid);
+          user.uid, result);
     } else {
       Navigator.pop(dialogContext);
     }
   }
 
-  Future addUserDetails(String username, String role, String uid) async {
+  Future addUserDetails(String username, String role, String uid, var result) async {
     if (role == 'Customer') {
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'role': role,
@@ -83,10 +98,12 @@ class _RegisterPageState extends State<RegisterPage> {
         'phoneNumber': '-',
         'description': '-',
         'location': '-',
-        'services': [],
+        'services': result,
         'rating': 0.0,
         'rateAmount': 0,
         'address': '-',
+        'active' : false,
+        'valid' : true,
       });
     }
   }
@@ -221,7 +238,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: OutlinedButton(
-                      onPressed: () => RegisterUserIn('Provider'),
+                      onPressed: () async {
+                        await RegisterUserIn('Provider');
+                        emailController.clear();
+                        passwordController.clear();
+                        firstNameController.clear();
+                        lastNameController.clear();
+                      },
                       child: Text(
                         'Register as Fixer',
                         style: TextStyle(

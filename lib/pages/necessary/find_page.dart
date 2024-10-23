@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:come_n_fix/components/loading_animation.dart';
 import 'package:come_n_fix/repository/user_repository.dart';
@@ -161,20 +164,21 @@ class _FindPageState extends State<FindPage> {
                           _nearbyList[index]['location'] != '-' &&
                           _nearbyList[index]['phoneNumber'] != '-'))
                   ? ListTile(
-                      onTap: () => _providerDetail(_nearbyList[index]),
+                      onTap: () {_providerDetail(_nearbyList[index]);},
                       title: Text(_nearbyList[index]['username']),
                       subtitle: Text(_nearbyList[index]['address']),
                       trailing: GestureDetector(
                         onTap: () {
-                          _hire(_nearbyList[index].id);
+                          if(_nearbyList[index]['active']) _hire(_nearbyList[index].id);
                         },
                         child: Text(
-                          'Hire',
+                          (_nearbyList[index]['active']) ? 'Hire': 'Busy',
                           style: TextStyle(
                               color: Color.fromARGB(255, 143, 90, 38),
                               fontWeight: FontWeight.bold,
                               fontSize: 14),
                         ),
+
                       ),
                     )
                   : Container();
@@ -195,15 +199,15 @@ class _FindPageState extends State<FindPage> {
                 _resultList[index]['location'] != '-' &&
                 _resultList[index]['phoneNumber'] != '-')
             ? ListTile(
-                onTap: () => _providerDetail(_resultList[index]),
+                onTap: () { _providerDetail(_resultList[index]);},
                 title: Text(_resultList[index]['username']),
                 subtitle: Text(_resultList[index]['address']),
                 trailing: GestureDetector(
                   onTap: () {
-                    _hire(_resultList[index].id);
+                    if(_resultList[index]['active']) _hire(_resultList[index].id);
                   },
                   child: Text(
-                    'Hire',
+                    (_resultList[index]['active']) ? 'Hire' : 'Busy',
                     style: TextStyle(
                         color: Color.fromARGB(255, 143, 90, 38),
                         fontWeight: FontWeight.bold,

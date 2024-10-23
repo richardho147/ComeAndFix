@@ -8,6 +8,7 @@ import 'package:come_n_fix/repository/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
@@ -32,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Color.fromARGB(255, 72, 71, 76),
+        backgroundColor: Color.fromARGB(255, 124, 102, 89),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: Text(
           "Edit $field",
@@ -174,8 +175,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 10,
               ),
               Text('$currentEmail'),
+              if (userDetail['role'] == 'Provider')
+                toggleActive(userDetail['active']),
               Padding(
-                padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                padding: const EdgeInsets.only(left: 20 , bottom: 10),
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -204,7 +207,9 @@ class _ProfilePageState extends State<ProfilePage> {
     if (detailKeys[userDetail.length - 1 - index] == 'profileUrl' ||
         detailKeys[userDetail.length - 1 - index] == 'role' ||
         detailKeys[userDetail.length - 1 - index] == 'location' ||
-        detailKeys[userDetail.length - 1 - index] == 'rateAmount') {
+        detailKeys[userDetail.length - 1 - index] == 'rateAmount' ||
+        detailKeys[userDetail.length - 1 - index] == 'active' ||
+        detailKeys[userDetail.length - 1 - index] == 'valid') {
       return Container();
     } else if (detailKeys[userDetail.length - 1 - index] == 'rating') {
       return Container(
@@ -238,34 +243,38 @@ class _ProfilePageState extends State<ProfilePage> {
       String services = userDetail['services'].join(', ');
 
       return Container(
+        height: 90,
         decoration: BoxDecoration(
             color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.only(left: 15, bottom: 15),
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Services',
-                  style: TextStyle(color: Colors.grey[500]),
-                ),
-                IconButton(
-                  onPressed: () => editField('services'),
-                  icon: Icon(Icons.settings),
-                  color: Colors.grey[400],
-                )
-              ],
-            ),
-            Text(services),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Services',
+                    style: TextStyle(color: Colors.grey[500]),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 11,
+              ),
+              Text(services),
+            ],
+          ),
         ),
       );
     } else {
       return ProfileBox(
-          section: (detailKeys[userDetail.length - 1 - index] == 'phoneNumber') ? "Phone Number" : detailKeys[userDetail.length - 1 - index].capitalize(),
+          section: (detailKeys[userDetail.length - 1 - index] == 'phoneNumber')
+              ? "Phone Number"
+              : detailKeys[userDetail.length - 1 - index].capitalize(),
           text: userDetail[detailKeys[userDetail.length - 1 - index]],
           onPressed: () =>
               (detailKeys[userDetail.length - 1 - index] == 'address')
@@ -285,7 +294,10 @@ class _ProfilePageState extends State<ProfilePage> {
             detailKeys[userDetail.length - 1 - index] == 'location')
         ? Container()
         : ProfileBox(
-            section: (detailKeys[userDetail.length - 1 - index] == 'phoneNumber') ? "Phone Number" : detailKeys[userDetail.length - 1 - index].capitalize(),
+            section:
+                (detailKeys[userDetail.length - 1 - index] == 'phoneNumber')
+                    ? "Phone Number"
+                    : detailKeys[userDetail.length - 1 - index].capitalize(),
             text: userDetail[detailKeys[userDetail.length - 1 - index]],
             onPressed: () =>
                 (detailKeys[userDetail.length - 1 - index] == 'address')
@@ -295,6 +307,47 @@ class _ProfilePageState extends State<ProfilePage> {
                           builder: (context) => SelectLocationPage(),
                         ))
                     : editField(detailKeys[userDetail.length - 1 - index]));
+  }
+
+  Widget toggleActive(bool active) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Active',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    )),
+              ),
+              Transform.scale(
+                scale: 0.8,
+                child: Switch(
+                    value: active,
+                    activeColor: Color.fromARGB(255, 124, 102, 89),
+                    activeTrackColor: Color.fromARGB(255, 212, 190, 169),
+                    inactiveThumbColor: Color.fromARGB(255, 124, 102, 89),
+                    inactiveTrackColor: Colors.white,
+                    onChanged: (value) async {
+                      await usersCollection
+                          .doc(currentId)
+                          .update({'active': value});
+                    }),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
   }
 }
 
