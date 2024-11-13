@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:come_n_fix/components/loading_animation.dart';
 import 'package:come_n_fix/repository/user_repository.dart';
@@ -164,21 +161,23 @@ class _FindPageState extends State<FindPage> {
                           _nearbyList[index]['location'] != '-' &&
                           _nearbyList[index]['phoneNumber'] != '-'))
                   ? ListTile(
-                      onTap: () {_providerDetail(_nearbyList[index]);},
+                      onTap: () {
+                        _providerDetail(_nearbyList[index]);
+                      },
                       title: Text(_nearbyList[index]['username']),
                       subtitle: Text(_nearbyList[index]['address']),
                       trailing: GestureDetector(
                         onTap: () {
-                          if(_nearbyList[index]['active']) _hire(_nearbyList[index].id);
+                          if (_nearbyList[index]['active'])
+                            _hire(_nearbyList[index].id);
                         },
                         child: Text(
-                          (_nearbyList[index]['active']) ? 'Hire': 'Busy',
+                          (_nearbyList[index]['active']) ? 'Hire' : 'Busy',
                           style: TextStyle(
                               color: Color.fromARGB(255, 143, 90, 38),
                               fontWeight: FontWeight.bold,
                               fontSize: 14),
                         ),
-
                       ),
                     )
                   : Container();
@@ -199,12 +198,15 @@ class _FindPageState extends State<FindPage> {
                 _resultList[index]['location'] != '-' &&
                 _resultList[index]['phoneNumber'] != '-')
             ? ListTile(
-                onTap: () { _providerDetail(_resultList[index]);},
+                onTap: () {
+                  _providerDetail(_resultList[index]);
+                },
                 title: Text(_resultList[index]['username']),
                 subtitle: Text(_resultList[index]['address']),
                 trailing: GestureDetector(
                   onTap: () {
-                    if(_resultList[index]['active']) _hire(_resultList[index].id);
+                    if (_resultList[index]['active'])
+                      _hire(_resultList[index].id);
                   },
                   child: Text(
                     (_resultList[index]['active']) ? 'Hire' : 'Busy',
@@ -220,13 +222,21 @@ class _FindPageState extends State<FindPage> {
     );
   }
 
-  _providerDetail(var userDetail) {
+  _providerDetail(var userDetail) async {
+    var reviewsSnapshot = await FirebaseFirestore.instance
+        .collection('reviews')
+        .where('providerId', isEqualTo: userDetail.id)
+        .get();
+
+    List<Map<String, dynamic>> reviews =
+        reviewsSnapshot.docs.map((doc) => doc.data()).toList();
+
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return SizedBox(
             width: double.infinity,
-            height: 400,
+            height: 800,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
               child: Column(
@@ -264,17 +274,17 @@ class _FindPageState extends State<FindPage> {
                     ),
                   ),
                   Text(userDetail['username']),
-                  Text('${userDetail['address']}'),
+                  Text('Location: ${userDetail['address']}'),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Text(
                     'Description',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                   Container(
-                      height: 90,
-                      width: 280,
+                      height: 70,
+                      width: 260,
                       decoration: BoxDecoration(
                           color: Colors.grey[300],
                           border: Border.all(
@@ -296,6 +306,21 @@ class _FindPageState extends State<FindPage> {
                       ? Text('No rating yet')
                       : Text(
                           'Total Rating: ${userDetail['rating']}/5 by ${userDetail['rateAmount']} User'),
+                  SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: reviews.length,
+                      itemBuilder: (context, index) {
+                        var review = reviews[index];
+                        return ListTile(
+                          leading: Icon(Icons.star, color: Colors.amber),
+                          title: Text(
+                              '${review['rating']}/5 by ${review['customerName']}'),
+                          subtitle: Text((review['comment'] != "") ? '${review['comment']}' : '-'),
+                        );
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

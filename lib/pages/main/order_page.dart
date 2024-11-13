@@ -241,7 +241,8 @@ class _OrderPageState extends State<OrderPage> {
             _rateProvider(
                 transaction['providerId'],
                 transaction['providerName'],
-                '${transaction['providerId']}_${transaction['customerId']}');
+                '${transaction['providerId']}_${transaction['customerId']}', 
+                transaction['customerName']);
           },
           child: Icon(Icons.star, color: Color.fromARGB(255, 124, 102, 89)),
         );
@@ -334,10 +335,11 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> _rateProvider(
-      String providerId, String providerName, String transactionId) async {
+      String providerId, String providerName, String transactionId, String customerName) async {
     double newValue = -1;
     double rating = await userRep.getUserRating(providerId);
     int rateAmount = await userRep.getUserRateAmount(providerId);
+    final commentController = TextEditingController();
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -347,13 +349,40 @@ class _OrderPageState extends State<OrderPage> {
           "Rate $providerName",
           style: TextStyle(color: Colors.white),
         ),
-        content: Container(
-          height: 30,
-          child: RatingBar(
-            maxRating: 5,
-            filledIcon: Icons.star,
-            emptyIcon: Icons.star_border,
-            onRatingChanged: (value) => newValue = value,
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+          height: 200,
+          child: Column(
+            children: [
+              Container(
+                height: 30,
+                child: RatingBar(
+                  maxRating: 5,
+                  filledIcon: Icons.star,
+                  emptyIcon: Icons.star_border,
+                  onRatingChanged: (value) => newValue = value,
+                ),
+              ),
+              SizedBox(height: 15,),
+              TextField(
+                controller: commentController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color.fromARGB(255, 72, 71, 76), width: 1.5)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 72, 71, 76), width: 1.5),
+                  ),
+                  contentPadding: EdgeInsets.all(15.0),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  hintText: 'Any Comment?',
+                  hintStyle: TextStyle(color: Colors.grey[500]),
+                ),
+              ),
+            ],
           ),
         ),
         actions: [
@@ -368,6 +397,12 @@ class _OrderPageState extends State<OrderPage> {
                     'rating': ((newValue + (rating * rateAmount)) /
                         (rateAmount + 1)),
                     'rateAmount': (rateAmount + 1)
+                  });
+                  await _firestore.collection('reviews').add({
+                    'providerId' : providerId,
+                    'customerName': customerName,
+                    'rating': newValue,
+                    'comment' : commentController.text,
                   });
                   await _firestore
                       .collection('transactions')
